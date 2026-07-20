@@ -1,0 +1,16 @@
+{
+  "name": "Witnessed",
+  "short_name": "Witnessed",
+  "description": "Your personal live sports history.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0e10",
+  "theme_color": "#0d0e10",
+  "icons": [
+    {
+      "src": "/assets/witnessed-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
