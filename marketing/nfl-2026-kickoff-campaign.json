@@ -1,0 +1,102 @@
+{
+  "campaignId": "nfl_kickoff_2026",
+  "campaignName": "Saturdays Built Sundays — Bring Receipts",
+  "timezone": "America/New_York",
+  "mediaBase": "https://bluebrook.co/assets/social/campaigns/nfl-2026-kickoff",
+  "landingUrl": "https://apps.apple.com/app/id6781100911",
+  "sources": [
+    "https://www.nfl.com/schedules/2026/by-week/week-1",
+    "https://www.nfl.com/schedules/2026/by-week/week-2",
+    "https://www.nfl.com/news/nfl-make-your-plan-to-watch-the-2026-nfl-season",
+    "https://www.nfl.com/news/2026-27-national-football-league-important-dates"
+  ],
+  "posts": [
+    {
+      "id": "nfl26-01-sec-sunday-roll-call",
+      "asset": "01-sec-sunday-roll-call.png",
+      "dueAt": "2026-08-20T23:05:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Cream, black and gold Witnessed graphic reading SEC Sunday Roll Call, with blank lines for a fan's school and NFL team beside a stadium ticket illustration.",
+      "twitter": "SEC Sunday roll call.\n\nSchool first. NFL team second.\n\nDrop both. Be unreasonable.",
+      "instagram": "SEC Sunday roll call.\n\nSchool first. NFL team second. Drop both below—and be unreasonable.\n\nThe roster changes. The college bias never does. Witnessed is the personal archive for every game you were actually there for. Link in bio.\n\n#WitnessedApp #SECFootball #NFL"
+    },
+    {
+      "id": "nfl26-02-bring-receipts",
+      "asset": "02-bring-the-receipts.png",
+      "dueAt": "2026-08-23T23:35:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Black, cream and gold Witnessed ticket graphic reading Bring the Receipts and encouraging fans to log, relive and keep the games they attended together.",
+      "twitter": "SEC fans can remember a 2019 recruiting ranking and still lose the final score from a game they attended.\n\nDrop the best NFL game you've seen live. Year + matchup. Bring receipts.",
+      "instagram": "SEC fans can remember a 2019 recruiting ranking and still lose the final score from a game they attended.\n\nDrop the best NFL game you've seen live—year and matchup. Then keep the memory together in Witnessed. Link in bio.\n\n#WitnessedApp #SportsMemories #NFL"
+    },
+    {
+      "id": "nfl26-03-big-screen-draft",
+      "asset": "03-big-screen-draft.png",
+      "dueAt": "2026-08-25T16:20:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Witnessed Week 1 graphic asking fans to rank four NFL games for the big screen: Chicago at Carolina, Tampa Bay at Cincinnati, Atlanta at Pittsburgh, and the New York Jets at Tennessee.",
+      "twitter": "One TV. Four Week 1 games.\n\n1. CHI @ CAR\n2. TB @ CIN\n3. ATL @ PIT\n4. NYJ @ TEN\n\nDraft your screen order. Your group chat will judge you.",
+      "instagram": "One TV. Four Week 1 games.\n\n1. Chicago at Carolina\n2. Tampa Bay at Cincinnati\n3. Atlanta at Pittsburgh\n4. New York Jets at Tennessee\n\nDraft your screen order below. Your group chat will judge you.\n\n#WitnessedApp #NFLKickoff #SECFootball"
+    },
+    {
+      "id": "nfl26-04-one-week-history",
+      "asset": "04-one-week-build-history.png",
+      "dueAt": "2026-09-02T23:05:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Dark Witnessed countdown graphic reading One Week, Build Your History, with a cream and gold stadium ticket illustration.",
+      "twitter": "One week until kickoff.\n\nYour future Sunday arguments are ready. Your old receipts are scattered across screenshots, camera rolls and group chats.\n\nBuild the archive before the season: https://apps.apple.com/app/id6781100911",
+      "instagram": "One week until kickoff.\n\nYour future Sunday arguments are ready. Your old receipts are scattered across screenshots, camera rolls and group chats.\n\nImport the games you remember before the new season starts making more. Link in bio.\n\n#WitnessedApp #FanHistory #NFLKickoff"
+    },
+    {
+      "id": "nfl26-05-opening-night",
+      "asset": "05-opening-night-college-bias.png",
+      "dueAt": "2026-09-09T16:20:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Cream Witnessed opening-night graphic with a black ticket showing New England at Seattle on Wednesday, September 9 at 8:20 PM Eastern.",
+      "twitter": "NFL kickoff on a Wednesday. College bias still clocked in.\n\nPatriots @ Seahawks · 8:20 ET\n\nWhich SEC fanbase is claiming the first win of the season?",
+      "instagram": "The NFL season kicks off on a Wednesday. College bias still clocked in.\n\nNew England at Seattle · 8:20 PM ET\n\nWhich SEC fanbase is claiming the first win of the season?\n\n#WitnessedApp #NFLKickoff #SECFootball"
+    },
+    {
+      "id": "nfl26-06-down-under",
+      "asset": "06-sec-after-dark-down-under.png",
+      "dueAt": "2026-09-10T16:20:00.000Z",
+      "channels": ["twitter"],
+      "altText": "Black and gold Witnessed graphic reading Football Went Down Under, with a globe and a ticket for San Francisco at Los Angeles in Melbourne.",
+      "twitter": "Football went Down Under. The college arguments made the trip.\n\n49ers @ Rams · Melbourne · 8:35 ET\n\nWho's claiming this one?"
+    },
+    {
+      "id": "nfl26-07-southern-six-pack",
+      "asset": "07-southern-six-pack.png",
+      "dueAt": "2026-09-13T14:35:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Cream Witnessed graphic titled The Southern Six-Pack listing six NFL games at 1 PM Eastern and asking fans which game gets the big screen.",
+      "twitter": "The Southern Six-Pack is live at 1 PM.\n\nCHI–CAR\nTB–CIN\nATL–PIT\nNYJ–TEN\nNO–DET\nBUF–HOU\n\nOne big screen. Pick it.",
+      "instagram": "The Southern Six-Pack is live at 1 PM ET.\n\nChicago–Carolina\nTampa Bay–Cincinnati\nAtlanta–Pittsburgh\nNew York Jets–Tennessee\nNew Orleans–Detroit\nBuffalo–Houston\n\nOne big screen. Pick it.\n\n#WitnessedApp #NFLSunday #SECFootball"
+    },
+    {
+      "id": "nfl26-08-sunday-night-roll-call",
+      "asset": "08-school-first-nfl-second.png",
+      "dueAt": "2026-09-13T23:10:00.000Z",
+      "channels": ["twitter"],
+      "altText": "Black and gold Witnessed Sunday Night Roll Call graphic with blank lines for a fan's Saturday school and Sunday NFL team.",
+      "twitter": "Sunday night roll call.\n\nSchool first.\nNFL team second.\n\nDrop both and let the timeline judge.\n\nCowboys @ Giants · 8:20 ET"
+    },
+    {
+      "id": "nfl26-09-monday-night-receipts",
+      "asset": "09-monday-night-receipts.png",
+      "dueAt": "2026-09-14T22:35:00.000Z",
+      "channels": ["twitter"],
+      "altText": "Cream Witnessed graphic reading The Game Ends, The Receipt Does Not, with a black ticket for Denver at Kansas City on Monday night.",
+      "twitter": "Broncos @ Chiefs tonight.\n\nHave you ever seen either one live? Drop the game + year.\n\nThe game ends. The receipt doesn't. Log it in Witnessed: https://apps.apple.com/app/id6781100911"
+    },
+    {
+      "id": "nfl26-10-i85-civil-war",
+      "asset": "10-i85-group-chat-civil-war.png",
+      "dueAt": "2026-09-20T14:35:00.000Z",
+      "channels": ["twitter", "instagram"],
+      "altText": "Black, cream and gold Witnessed graphic titled I-85 Group Chat Civil War with a ticket for Carolina at Atlanta on Sunday, September 20.",
+      "twitter": "I-85 group chat civil war.\n\nCharlotte vs. Atlanta.\nPanthers @ Falcons · 1 ET.\n\nWhich side becomes unbearable first?",
+      "instagram": "I-85 group chat civil war.\n\nCharlotte versus Atlanta. Carolina at Atlanta · 1 PM ET.\n\nWhich side becomes unbearable first? Pick a side below.\n\n#WitnessedApp #KeepPounding #RiseUp"
+    }
+  ]
+}
