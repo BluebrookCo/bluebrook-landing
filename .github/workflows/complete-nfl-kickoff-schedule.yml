@@ -1,0 +1,46 @@
+name: Complete NFL kickoff schedule
+
+on:
+  workflow_dispatch:
+  schedule:
+    # The two existing intro posts have published by this point, freeing the
+    # final two X queue slots. The date guard keeps this a 2026 one-shot.
+    - cron: '27 17 19 8 *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: witnessed-nfl-kickoff-scheduler
+  cancel-in-progress: false
+
+jobs:
+  schedule-final-x-posts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm one-shot date
+        id: date_guard
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || "$(date -u +%F)" == "2026-08-19" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out campaign source
+        if: steps.date_guard.outputs.run == 'true'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Schedule remaining X posts
+        if: steps.date_guard.outputs.run == 'true'
+        env:
+          WITNESSED_BUFFER_KEY: ${{ secrets.WITNESSED_BUFFER_KEY }}
+        run: node scripts/schedule-nfl-2026-campaign.js --action=schedule --channel=twitter
+
+      - name: Verify complete X campaign
+        if: steps.date_guard.outputs.run == 'true'
+        env:
+          WITNESSED_BUFFER_KEY: ${{ secrets.WITNESSED_BUFFER_KEY }}
+        run: node scripts/schedule-nfl-2026-campaign.js --action=verify --channel=twitter

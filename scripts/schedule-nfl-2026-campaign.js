@@ -171,7 +171,7 @@ function assertNoCollision(posts, channelKey, spec) {
   }
 }
 
-async function preflight({ requireFuture = true } = {}) {
+async function preflight({ requireFuture = true, channelKeys = Object.keys(CHANNELS) } = {}) {
   validateManifest();
   const channels = await loadChannels();
   for (const expected of Object.values(CHANNELS)) {
@@ -194,10 +194,12 @@ async function preflight({ requireFuture = true } = {}) {
 
   const now = Date.now();
   for (const spec of campaign.posts) {
+    const targetChannels = spec.channels.filter((channelKey) => channelKeys.includes(channelKey));
+    if (targetChannels.length === 0) continue;
     if (requireFuture && new Date(spec.dueAt).getTime() <= now + 10 * 60 * 1000) {
       throw new Error(`${spec.id} is not at least 10 minutes in the future`);
     }
-    for (const channelKey of spec.channels) {
+    for (const channelKey of targetChannels) {
       const existing = findExisting(postsByChannel[channelKey], channelKey, spec);
       if (!existing) assertNoCollision(postsByChannel[channelKey], channelKey, spec);
     }
@@ -263,11 +265,11 @@ async function getPost(id) {
   return data.post;
 }
 
-async function scheduleCampaign() {
-  const postsByChannel = await preflight({ requireFuture: true });
+async function scheduleCampaign(channelKeys) {
+  const postsByChannel = await preflight({ requireFuture: true, channelKeys });
   const scheduled = [];
   for (const spec of campaign.posts) {
-    for (const channelKey of spec.channels) {
+    for (const channelKey of spec.channels.filter((key) => channelKeys.includes(key))) {
       let post = findExisting(postsByChannel[channelKey], channelKey, spec);
       if (!post) {
         post = await createPost(channelKey, spec);
@@ -291,10 +293,11 @@ async function scheduleCampaign() {
   console.log(`SCHEDULED ${JSON.stringify(scheduled)}`);
 }
 
-async function audit({ strict = false } = {}) {
+async function audit({ strict = false, channelKeys = Object.keys(CHANNELS) } = {}) {
   validateManifest();
   const rows = [];
   for (const [channelKey, channel] of Object.entries(CHANNELS)) {
+    if (!channelKeys.includes(channelKey)) continue;
     const posts = await listPosts(channel.id);
     for (const spec of specsForChannel(channelKey)) {
       const matching = findExisting(posts, channelKey, spec);
@@ -337,17 +340,21 @@ function preview() {
 async function main() {
   const actionArg = process.argv.find((arg) => arg.startsWith('--action='));
   const action = actionArg ? actionArg.slice('--action='.length) : 'preview';
+  const channelArg = process.argv.find((arg) => arg.startsWith('--channel='));
+  const channelKey = channelArg ? channelArg.slice('--channel='.length) : null;
+  if (channelKey && !CHANNELS[channelKey]) throw new Error(`Unsupported channel: ${channelKey}`);
+  const channelKeys = channelKey ? [channelKey] : Object.keys(CHANNELS);
   if (action === 'preview') return preview();
   if (!['preflight', 'schedule', 'audit', 'verify'].includes(action)) {
     throw new Error(`Unsupported action: ${action}`);
   }
   if (action === 'preflight') {
-    await preflight({ requireFuture: true });
+    await preflight({ requireFuture: true, channelKeys });
     console.log('PREFLIGHT OK');
   }
-  if (action === 'schedule') await scheduleCampaign();
-  if (action === 'audit') await audit({ strict: false });
-  if (action === 'verify') await audit({ strict: true });
+  if (action === 'schedule') await scheduleCampaign(channelKeys);
+  if (action === 'audit') await audit({ strict: false, channelKeys });
+  if (action === 'verify') await audit({ strict: true, channelKeys });
 }
 
 main().catch((error) => {
