@@ -1,10 +1,10 @@
-# Saturdays Built Sundays — Bring Receipts
+# NFL Kickoff — Bring Receipts
 
-Witnessed's 2026 NFL kickoff campaign uses SEC identity and reply-first sports conversation to reach the SEC-burner side of X without pretending to be an official league or team account.
+Witnessed's 2026 NFL kickoff campaign uses irreverent, reply-first sports conversation to reach highly engaged football fans without pretending to be an official league or team account. The audience persona shapes the voice; the subject remains the NFL throughout.
 
 ## Campaign arcs
 
-1. **SEC Sunday Roll Call** — school-first identity prompts and regional rivalry posts designed for replies.
+1. **NFL Sunday Roll Call** — team identity, live-memory prompts, and regional rivalry posts designed for replies.
 2. **Bring Receipts** — conversion posts that connect sports arguments to the fan's real attendance archive.
 3. **Kickoff Passport** — schedule-led posts that make the season feel global and culturally immediate.
 
@@ -14,13 +14,13 @@ The voice is opinionated, concise, and fan-native. Product calls to action appea
 
 | Eastern time | Post | X | Instagram |
 | --- | --- | --- | --- |
-| Aug 20, 7:05 PM | SEC Sunday Roll Call | Yes | Yes |
+| Aug 20, 7:05 PM | NFL Sunday Roll Call | Yes | Yes |
 | Aug 23, 7:35 PM | Bring the Receipts | Yes | Yes |
 | Aug 25, 12:20 PM | Big Screen Draft | Yes | Yes |
 | Sep 2, 7:05 PM | One Week: Build Your History | Yes | Yes |
-| Sep 9, 12:20 PM | Opening Night / College Bias | Yes | Yes |
+| Sep 9, 12:20 PM | Opening Night | Yes | Yes |
 | Sep 10, 12:20 PM | Football Went Down Under | Yes | No |
-| Sep 13, 10:35 AM | Southern Six-Pack | Yes | Yes |
+| Sep 13, 10:35 AM | Sunday Six-Pack | Yes | Yes |
 | Sep 13, 7:10 PM | Sunday Night Roll Call | Yes | No |
 | Sep 14, 6:35 PM | Monday Night Receipts | Yes | No |
 | Sep 20, 10:35 AM | I-85 Group Chat Civil War | Yes | Yes |

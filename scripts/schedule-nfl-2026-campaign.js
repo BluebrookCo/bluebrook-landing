@@ -1,8 +1,12 @@
+const fs = require('fs');
+const path = require('path');
 const campaign = require('../marketing/nfl-2026-kickoff-campaign.json');
 
 const API = 'https://api.buffer.com';
 const ORGANIZATION_ID = '6a7f23b911563269b3a59cf8';
 const COLLISION_WINDOW_MS = 45 * 60 * 1000;
+const RENDER_SOURCE_PATH = path.join(__dirname, 'render-nfl-2026-campaign.js');
+const NFL_CROSS_LEAGUE_PATTERN = /#secfootball|\b(?:sec|cfb|college|school|southern|saturdays?)\b/i;
 
 const CHANNELS = {
   instagram: {
@@ -25,18 +29,31 @@ function specsForChannel(channelKey) {
   return campaign.posts.filter((post) => post.channels.includes(channelKey));
 }
 
-function validateManifest() {
-  if (!campaign.campaignId || !campaign.mediaBase?.startsWith('https://')) {
+function assertNflOnly(label, value) {
+  const match = String(value || '').match(NFL_CROSS_LEAGUE_PATTERN);
+  if (match) {
+    throw new Error(`NFL campaign ${label} contains cross-league term: ${match[0]}`);
+  }
+}
+
+function validateManifest(subject = campaign, renderSource = null) {
+  if (!subject.campaignId || !subject.mediaBase?.startsWith('https://')) {
     throw new Error('Campaign identity or media base is invalid');
   }
-  if (!Array.isArray(campaign.posts) || campaign.posts.length === 0) {
+  if (subject.primaryLeague !== 'nfl' || subject.scope !== 'single_league') {
+    throw new Error('NFL campaign must declare primaryLeague=nfl and scope=single_league');
+  }
+  if (!subject.audiencePersona?.trim()) {
+    throw new Error('NFL campaign must separate its audience persona from its content subject');
+  }
+  if (!Array.isArray(subject.posts) || subject.posts.length === 0) {
     throw new Error('Campaign has no posts');
   }
 
   const ids = new Set();
   const assets = new Set();
   const channelTexts = new Set();
-  for (const spec of campaign.posts) {
+  for (const spec of subject.posts) {
     if (!spec.id || ids.has(spec.id)) throw new Error(`Duplicate or missing post ID: ${spec.id}`);
     ids.add(spec.id);
     if (!spec.asset?.endsWith('.png') || assets.has(spec.asset)) {
@@ -44,6 +61,15 @@ function validateManifest() {
     }
     assets.add(spec.asset);
     if (!spec.altText || spec.altText.length > 1000) throw new Error(`Invalid alt text for ${spec.id}`);
+    for (const [field, value] of Object.entries({
+      id: spec.id,
+      asset: spec.asset,
+      altText: spec.altText,
+      twitter: spec.twitter,
+      instagram: spec.instagram,
+    })) {
+      assertNflOnly(`${spec.id}.${field}`, value);
+    }
     const dueAt = new Date(spec.dueAt);
     if (!Number.isFinite(dueAt.getTime()) || dueAt.toISOString() !== spec.dueAt) {
       throw new Error(`Invalid UTC schedule for ${spec.id}`);
@@ -63,6 +89,11 @@ function validateManifest() {
       channelTexts.add(fingerprint);
     }
   }
+
+  const source = renderSource === null
+    ? fs.readFileSync(RENDER_SOURCE_PATH, 'utf8')
+    : renderSource;
+  assertNflOnly('rendered artwork source', source);
 }
 
 async function request(query, variables) {
@@ -357,7 +388,14 @@ async function main() {
   if (action === 'verify') await audit({ strict: true, channelKeys });
 }
 
-main().catch((error) => {
-  console.error(`FAILED: ${error.message}`);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(`FAILED: ${error.message}`);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  NFL_CROSS_LEAGUE_PATTERN,
+  validateManifest,
+};

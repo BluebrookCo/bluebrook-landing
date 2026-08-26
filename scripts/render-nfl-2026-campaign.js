@@ -255,7 +255,7 @@ async function main() {
     loadImage(path.join(SITE_ROOT, 'assets/witnessed-icon.png')),
   ]);
 
-  // 01 — SEC Sunday Roll Call
+  // 01 — NFL Sunday Roll Call
   {
     const canvas = createCanvas(W, H);
     const ctx = canvas.getContext('2d');
@@ -263,29 +263,29 @@ async function main() {
     ctx.fillStyle = GOLD;
     ctx.fillRect(0, 0, 20, H);
     wordmark(ctx, 80, 78, false);
-    smallLabel(ctx, 'Campaign 01 / SEC Sunday', 680, 116, MUTED, 16, 2.4);
-    headline(ctx, ['SEC SUNDAY', 'ROLL CALL.'], 80, 286, 860, { size: 132, gap: 128, colors: [INK, GOLD] });
+    smallLabel(ctx, 'Campaign 01 / NFL Sunday', 680, 116, MUTED, 16, 2.4);
+    headline(ctx, ['NFL SUNDAY', 'ROLL CALL.'], 80, 286, 860, { size: 132, gap: 128, colors: [INK, GOLD] });
     ctx.fillStyle = MUTED;
     ctx.font = '500 29px Inter';
-    ctx.fillText('The NFL roster changes. The college bias never does.', 85, 496);
+    ctx.fillText('Name your team. Then name the best game you saw live.', 85, 496);
 
     fillTicket(ctx, 78, 584, 620, 498, INK, null, true);
-    smallLabel(ctx, 'State your affiliations', 128, 650, GOLD, 15, 2.5);
+    smallLabel(ctx, 'State your case', 128, 650, GOLD, 15, 2.5);
     ctx.fillStyle = PAPER;
     ctx.font = '400 63px Anton';
-    ctx.fillText('SCHOOL', 128, 752);
+    ctx.fillText('YOUR TEAM', 128, 752);
     ctx.strokeStyle = 'rgba(247,245,241,0.42)';
     ctx.lineWidth = 3;
     ctx.beginPath(); ctx.moveTo(128, 790); ctx.lineTo(638, 790); ctx.stroke();
-    ctx.fillText('NFL TEAM', 128, 902);
+    ctx.fillText('BEST LIVE GAME', 128, 902);
     ctx.beginPath(); ctx.moveTo(128, 940); ctx.lineTo(638, 940); ctx.stroke();
     ctx.fillStyle = GOLD;
     ctx.font = '700 20px Inter';
-    ctx.fillText('REPLY. BE UNREASONABLE.', 128, 1018);
+    ctx.fillText('DROP BOTH. BRING RECEIPTS.', 128, 1018);
 
     ctx.drawImage(stadiumTicket, 608, 520, 430, 430);
-    footer(ctx, false, 'SATURDAYS BUILT SUNDAYS.', 'REPLY BELOW');
-    write(canvas, '01-sec-sunday-roll-call.png');
+    footer(ctx, false, 'SUNDAYS COME WITH RECEIPTS.', 'REPLY BELOW');
+    write(canvas, '01-nfl-sunday-roll-call.png');
   }
 
   // 02 — Bring the Receipts
@@ -332,14 +332,14 @@ async function main() {
     headline(ctx, ['ONE TV.', 'FOUR GAMES.'], 80, 280, 900, { size: 130, gap: 124, colors: [INK, GOLD] });
     ctx.fillStyle = MUTED;
     ctx.font = '500 29px Inter';
-    ctx.fillText('Who gets the big screen in SEC country?', 85, 492);
+    ctx.fillText('Who gets the big screen at your place?', 85, 492);
     const matchups = ['CHI  @  CAR', 'TB  @  CIN', 'ATL  @  PIT', 'NYJ  @  TEN'];
     matchups.forEach((matchup, index) => drawMatchRow(ctx, 80, 568 + index * 124, 920, matchup, index !== 1, `${index + 1}`));
     ctx.fillStyle = GOLD;
     ctx.font = '400 50px Anton';
     ctx.fillText('DRAFT YOUR SCREEN ORDER.', 80, 1132);
     footer(ctx, false, 'SUNDAY · SEPTEMBER 13', 'DROP 1–4');
-    write(canvas, '03-big-screen-draft.png');
+    write(canvas, '03-big-screen-draft-nfl.png');
   }
 
   // 04 — One Week Before Kickoff
@@ -371,7 +371,7 @@ async function main() {
     background(ctx, false);
     wordmark(ctx, 80, 78, false);
     smallLabel(ctx, 'Opening night', 790, 116, MUTED, 16, 2.4);
-    headline(ctx, ['COLLEGE BIAS', 'DOES NOT TAKE', 'WEDNESDAYS OFF.'], 80, 262, 920, { size: 103, gap: 102, colors: [INK, INK, GOLD] });
+    headline(ctx, ['THE NFL IS BACK.', 'ON A WEDNESDAY.'], 80, 292, 920, { size: 112, gap: 110, colors: [INK, GOLD] });
 
     fillTicket(ctx, 78, 624, 924, 430, INK, GOLD, true);
     smallLabel(ctx, '2026 NFL Kickoff', 132, 700, GOLD, 16, 2.8);
@@ -383,9 +383,9 @@ async function main() {
     ctx.fillText('WED · SEP 9 · 8:20 PM ET', 136, 932);
     ctx.fillStyle = GOLD;
     ctx.font = '700 21px Inter';
-    ctx.fillText('WHICH SEC FANBASE CLAIMS THE FIRST WIN?', 136, 1002);
-    footer(ctx, false, 'THE SEASON STARTS TONIGHT.', 'REPLY WITH YOUR SCHOOL');
-    write(canvas, '05-opening-night-college-bias.png');
+    ctx.fillText('WHO WINS — AND HAVE YOU SEEN EITHER LIVE?', 136, 1002);
+    footer(ctx, false, 'THE SEASON STARTS TONIGHT.', 'PICK A SIDE');
+    write(canvas, '05-opening-night.png');
   }
 
   // 06 — Down Under
@@ -399,7 +399,7 @@ async function main() {
     headline(ctx, ['FOOTBALL WENT', 'DOWN UNDER.'], 80, 310, 920, { size: 116, gap: 116, colors: [PAPER, GOLD] });
     ctx.fillStyle = 'rgba(247,245,241,0.76)';
     ctx.font = '500 30px Inter';
-    wrapText(ctx, 'The game crossed an ocean. The college arguments made the trip. Who are you claiming?', 86, 582, 600, 47, 4);
+    wrapText(ctx, 'The game crossed an ocean and opened Week 1. Who are you taking?', 86, 582, 600, 47, 4);
     fillTicket(ctx, 120, 840, 840, 220, PAPER, GOLD, true);
     ctx.fillStyle = INK;
     ctx.font = '400 64px Anton';
@@ -408,17 +408,17 @@ async function main() {
     ctx.font = '700 21px Inter';
     ctx.fillText('THU · SEP 10 · 8:35 PM ET · MELBOURNE', 180, 1014);
     footer(ctx, true, 'FOOTBALL HAS A PASSPORT.', 'PICK A SIDE');
-    write(canvas, '06-sec-after-dark-down-under.png');
+    write(canvas, '06-football-down-under.png');
   }
 
-  // 07 — Southern Six-Pack
+  // 07 — Sunday Six-Pack
   {
     const canvas = createCanvas(W, H);
     const ctx = canvas.getContext('2d');
     background(ctx, false);
     wordmark(ctx, 80, 78, false);
     smallLabel(ctx, 'Sunday / 1 PM ET', 750, 116, MUTED, 16, 2.4);
-    headline(ctx, ['THE SOUTHERN', 'SIX-PACK.'], 80, 286, 900, { size: 130, gap: 126, colors: [INK, GOLD] });
+    headline(ctx, ['THE SUNDAY', 'SIX-PACK.'], 80, 286, 900, { size: 130, gap: 126, colors: [INK, GOLD] });
     const games = ['CHI @ CAR', 'TB @ CIN', 'ATL @ PIT', 'NYJ @ TEN', 'NO @ DET', 'BUF @ HOU'];
     games.forEach((game, index) => {
       const col = index % 2;
@@ -432,31 +432,29 @@ async function main() {
     ctx.font = '500 27px Inter';
     ctx.fillText('Your answer will be judged by the group chat.', 84, 1060);
     footer(ctx, false, 'SUNDAY · SEPTEMBER 13', 'NAME THE GAME');
-    write(canvas, '07-southern-six-pack.png');
+    write(canvas, '07-sunday-six-pack.png');
   }
 
-  // 08 — School First / NFL Second
+  // 08 — Sunday Night Roll Call
   {
     const canvas = createCanvas(W, H);
     const ctx = canvas.getContext('2d');
     background(ctx, true);
     wordmark(ctx, 80, 78, true);
     smallLabel(ctx, 'Sunday Night roll call', 670, 116, GOLD, 16, 2.4);
-    headline(ctx, ['SCHOOL FIRST.', 'NFL TEAM SECOND.'], 80, 296, 910, { size: 122, gap: 124, colors: [PAPER, GOLD] });
+    headline(ctx, ['SUNDAY NIGHT', 'ROLL CALL.'], 80, 296, 910, { size: 122, gap: 124, colors: [PAPER, GOLD] });
     fillTicket(ctx, 78, 610, 924, 460, PAPER, GOLD, true);
     ctx.fillStyle = INK;
-    ctx.font = '400 54px Anton';
-    ctx.fillText('SATURDAYS:', 136, 736);
-    ctx.strokeStyle = 'rgba(17,18,20,0.32)';
-    ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(430, 726); ctx.lineTo(914, 726); ctx.stroke();
-    ctx.fillText('SUNDAYS:', 136, 860);
-    ctx.beginPath(); ctx.moveTo(430, 850); ctx.lineTo(914, 850); ctx.stroke();
+    ctx.font = '400 106px Anton';
+    ctx.fillText('DAL  @  NYG', 136, 790);
+    ctx.fillStyle = MUTED;
+    ctx.font = '700 25px Inter';
+    ctx.fillText('SUN · SEP 13 · 8:20 PM ET', 140, 878);
     ctx.fillStyle = GOLD;
     ctx.font = '700 22px Inter';
-    ctx.fillText('DROP BOTH. LET THE TIMELINE JUDGE.', 136, 970);
+    ctx.fillText('WHO WINS? BRING YOUR BEST LIVE MEMORY.', 136, 970);
     footer(ctx, true, 'DAL @ NYG · 8:20 PM ET', 'ROLL CALL');
-    write(canvas, '08-school-first-nfl-second.png');
+    write(canvas, '08-sunday-night-roll-call.png');
   }
 
   // 09 — Monday Night Receipts
