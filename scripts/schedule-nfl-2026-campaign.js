@@ -5,7 +5,16 @@ const campaign = require('../marketing/nfl-2026-kickoff-campaign.json');
 const API = 'https://api.buffer.com';
 const ORGANIZATION_ID = '6a7f23b911563269b3a59cf8';
 const COLLISION_WINDOW_MS = 45 * 60 * 1000;
+const MIN_SCHEDULE_LEAD_MS = 10 * 60 * 1000;
 const RENDER_SOURCE_PATH = path.join(__dirname, 'render-nfl-2026-campaign.js');
+const CAMPAIGN_ASSET_DIR = path.join(
+  __dirname,
+  '..',
+  'assets',
+  'social',
+  'campaigns',
+  'nfl-2026-kickoff',
+);
 const NFL_CROSS_LEAGUE_PATTERN = /#secfootball|\b(?:sec|cfb|college|school|southern|saturdays?)\b/i;
 
 const CHANNELS = {
@@ -21,12 +30,25 @@ const CHANNELS = {
   },
 };
 
-function mediaUrl(spec) {
-  return `${campaign.mediaBase}/${spec.asset}`;
+function mediaUrl(spec, subject = campaign) {
+  return `${subject.mediaBase}/${spec.asset}`;
 }
 
-function specsForChannel(channelKey) {
-  return campaign.posts.filter((post) => post.channels.includes(channelKey));
+function specsForChannel(channelKey, subject = campaign) {
+  return subject.posts.filter((post) => post.channels.includes(channelKey));
+}
+
+function selectFutureSpecs(
+  subject = campaign,
+  channelKeys = Object.keys(CHANNELS),
+  nowMs = Date.now(),
+  minLeadMs = MIN_SCHEDULE_LEAD_MS,
+) {
+  const cutoff = nowMs + minLeadMs;
+  return subject.posts.filter((spec) => (
+    spec.channels.some((channelKey) => channelKeys.includes(channelKey))
+    && new Date(spec.dueAt).getTime() > cutoff
+  ));
 }
 
 function assertNflOnly(label, value) {
@@ -53,6 +75,7 @@ function validateManifest(subject = campaign, renderSource = null) {
   const ids = new Set();
   const assets = new Set();
   const channelTexts = new Set();
+  const schedulesByChannel = new Map();
   for (const spec of subject.posts) {
     if (!spec.id || ids.has(spec.id)) throw new Error(`Duplicate or missing post ID: ${spec.id}`);
     ids.add(spec.id);
@@ -87,6 +110,23 @@ function validateManifest(subject = campaign, renderSource = null) {
       const fingerprint = `${channelKey}\u0000${text}`;
       if (channelTexts.has(fingerprint)) throw new Error(`Duplicate ${channelKey} copy for ${spec.id}`);
       channelTexts.add(fingerprint);
+
+      const channelSchedule = schedulesByChannel.get(channelKey) || [];
+      channelSchedule.push({ id: spec.id, dueAt: dueAt.getTime() });
+      schedulesByChannel.set(channelKey, channelSchedule);
+    }
+  }
+
+  for (const [channelKey, channelSchedule] of schedulesByChannel.entries()) {
+    channelSchedule.sort((a, b) => a.dueAt - b.dueAt);
+    for (let index = 1; index < channelSchedule.length; index += 1) {
+      const previous = channelSchedule[index - 1];
+      const current = channelSchedule[index];
+      if (current.dueAt - previous.dueAt < COLLISION_WINDOW_MS) {
+        throw new Error(
+          `${current.id}/${channelKey} is within 45 minutes of manifest post ${previous.id}`,
+        );
+      }
     }
   }
 
@@ -94,6 +134,19 @@ function validateManifest(subject = campaign, renderSource = null) {
     ? fs.readFileSync(RENDER_SOURCE_PATH, 'utf8')
     : renderSource;
   assertNflOnly('rendered artwork source', source);
+}
+
+function validatePublishedAssets(subject = campaign, assetDir = CAMPAIGN_ASSET_DIR) {
+  const expected = new Set(subject.posts.map((spec) => spec.asset));
+  const actual = new Set(
+    fs.readdirSync(assetDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.png'))
+      .map((entry) => entry.name),
+  );
+  const missing = [...expected].filter((asset) => !actual.has(asset));
+  const obsolete = [...actual].filter((asset) => !expected.has(asset));
+  if (missing.length) throw new Error(`Missing campaign assets: ${missing.join(', ')}`);
+  if (obsolete.length) throw new Error(`Obsolete campaign assets in publish path: ${obsolete.join(', ')}`);
 }
 
 async function request(query, variables) {
@@ -134,64 +187,90 @@ async function loadChannels() {
   return data.channels || [];
 }
 
-async function listPosts(channelId) {
+async function listPosts(channelId, requestFn = request) {
   const query = `
-    query WitnessedCampaignPosts($input: PostsInput!, $first: Int!) {
-      posts(input: $input, first: $first) {
+    query WitnessedCampaignPosts($input: PostsInput!, $first: Int!, $after: String) {
+      posts(input: $input, first: $first, after: $after) {
         edges {
+          cursor
           node {
             id text status channelId dueAt sentAt externalLink
             error { message supportUrl }
             assets { source mimeType }
           }
         }
+        pageInfo { hasNextPage endCursor }
       }
     }
   `;
-  const data = await request(query, {
-    input: {
-      organizationId: ORGANIZATION_ID,
-      filter: {
-        channelIds: [channelId],
-        status: ['scheduled', 'sending', 'sent', 'error'],
+  const posts = [];
+  const seenIds = new Set();
+  const seenCursors = new Set();
+  let after = null;
+
+  do {
+    const data = await requestFn(query, {
+      input: {
+        organizationId: ORGANIZATION_ID,
+        filter: {
+          channelIds: [channelId],
+          status: ['scheduled', 'sending', 'sent', 'error'],
+        },
+        sort: [{ field: 'createdAt', direction: 'desc' }],
       },
-      sort: [{ field: 'createdAt', direction: 'desc' }],
-    },
-    first: 100,
-  });
-  return (data.posts.edges || []).map((edge) => edge.node);
+      first: 100,
+      after,
+    });
+    const connection = data.posts || {};
+    for (const edge of connection.edges || []) {
+      if (!edge?.node?.id || seenIds.has(edge.node.id)) continue;
+      seenIds.add(edge.node.id);
+      posts.push(edge.node);
+    }
+
+    if (!connection.pageInfo?.hasNextPage) break;
+    const nextCursor = connection.pageInfo.endCursor;
+    if (!nextCursor || seenCursors.has(nextCursor)) {
+      throw new Error(`Buffer pagination stalled for channel ${channelId}`);
+    }
+    seenCursors.add(nextCursor);
+    after = nextCursor;
+  } while (true);
+
+  return posts;
 }
 
-function hasExactAsset(post, spec) {
-  const expected = mediaUrl(spec);
+function hasExactAsset(post, spec, subject = campaign) {
+  const expected = mediaUrl(spec, subject);
   return post.assets?.some((asset) => asset.source === expected && asset.mimeType === 'image/png') || false;
 }
 
-function assertExactPost(post, channelKey, spec) {
+function assertExactPost(post, channelKey, spec, subject = campaign) {
   if (!post) throw new Error(`Missing ${spec.id}/${channelKey}`);
   if (post.text !== spec[channelKey]) throw new Error(`${spec.id}/${channelKey} text drift`);
   if (post.channelId !== CHANNELS[channelKey].id) throw new Error(`${spec.id}/${channelKey} channel drift`);
-  if (!hasExactAsset(post, spec)) throw new Error(`${spec.id}/${channelKey} media drift`);
+  if (!hasExactAsset(post, spec, subject)) throw new Error(`${spec.id}/${channelKey} media drift`);
   if (!post.dueAt || new Date(post.dueAt).toISOString() !== spec.dueAt) {
     throw new Error(`${spec.id}/${channelKey} schedule drift`);
   }
 }
 
-function findExisting(posts, channelKey, spec) {
+function findExisting(posts, channelKey, spec, subject = campaign) {
   const textMatches = posts.filter((post) => post.text === spec[channelKey]);
-  const assetMatches = posts.filter((post) => hasExactAsset(post, spec));
+  const assetMatches = posts.filter((post) => hasExactAsset(post, spec, subject));
   const combined = [...new Map([...textMatches, ...assetMatches].map((post) => [post.id, post])).values()];
   if (combined.length > 1) throw new Error(`Multiple existing records for ${spec.id}/${channelKey}`);
   if (combined.length === 1) {
-    assertExactPost(combined[0], channelKey, spec);
+    assertExactPost(combined[0], channelKey, spec, subject);
     return combined[0];
   }
   return null;
 }
 
-function assertNoCollision(posts, channelKey, spec) {
+function assertNoCollision(posts, channelKey, spec, ignorePostId = null) {
   const target = new Date(spec.dueAt).getTime();
   const collision = posts.find((post) => {
+    if (post.id === ignorePostId) return false;
     if (!post.dueAt || !['scheduled', 'sending'].includes(post.status)) return false;
     return Math.abs(new Date(post.dueAt).getTime() - target) < COLLISION_WINDOW_MS;
   });
@@ -202,10 +281,49 @@ function assertNoCollision(posts, channelKey, spec) {
   }
 }
 
-async function preflight({ requireFuture = true, channelKeys = Object.keys(CHANNELS) } = {}) {
+function planFutureQueue(
+  postsByChannel,
+  {
+    subject = campaign,
+    channelKeys = Object.keys(CHANNELS),
+    nowMs = Date.now(),
+    minLeadMs = MIN_SCHEDULE_LEAD_MS,
+  } = {},
+) {
+  const specs = selectFutureSpecs(subject, channelKeys, nowMs, minLeadMs);
+  const rows = [];
+  for (const spec of specs) {
+    const targetChannels = spec.channels.filter((channelKey) => channelKeys.includes(channelKey));
+    for (const channelKey of targetChannels) {
+      const posts = postsByChannel[channelKey] || [];
+      const existing = findExisting(posts, channelKey, spec, subject);
+      if (existing) {
+        if (existing.status !== 'scheduled') {
+          throw new Error(`${spec.id}/${channelKey} has unexpected future status ${existing.status}`);
+        }
+      }
+      assertNoCollision(posts, channelKey, spec, existing?.id || null);
+      rows.push({
+        spec,
+        channelKey,
+        action: existing ? 'reuse' : 'create',
+        post: existing,
+      });
+    }
+  }
+  return rows;
+}
+
+async function preflight({
+  channelKeys = Object.keys(CHANNELS),
+  nowMs = Date.now(),
+  minLeadMs = MIN_SCHEDULE_LEAD_MS,
+} = {}) {
   validateManifest();
+  validatePublishedAssets();
   const channels = await loadChannels();
-  for (const expected of Object.values(CHANNELS)) {
+  for (const channelKey of channelKeys) {
+    const expected = CHANNELS[channelKey];
     const actual = channels.find((channel) => channel.id === expected.id);
     if (!actual) throw new Error(`Missing ${expected.service} channel`);
     if (actual.name !== expected.name || actual.service !== expected.service) {
@@ -216,26 +334,17 @@ async function preflight({ requireFuture = true, channelKeys = Object.keys(CHANN
     }
   }
 
-  await Promise.all(campaign.posts.map((spec) => verifyMedia(mediaUrl(spec))));
+  const futureSpecs = selectFutureSpecs(campaign, channelKeys, nowMs, minLeadMs);
+  await Promise.all(futureSpecs.map((spec) => verifyMedia(mediaUrl(spec))));
 
   const postsByChannel = {};
-  for (const [channelKey, channel] of Object.entries(CHANNELS)) {
+  for (const channelKey of channelKeys) {
+    const channel = CHANNELS[channelKey];
     postsByChannel[channelKey] = await listPosts(channel.id);
   }
 
-  const now = Date.now();
-  for (const spec of campaign.posts) {
-    const targetChannels = spec.channels.filter((channelKey) => channelKeys.includes(channelKey));
-    if (targetChannels.length === 0) continue;
-    if (requireFuture && new Date(spec.dueAt).getTime() <= now + 10 * 60 * 1000) {
-      throw new Error(`${spec.id} is not at least 10 minutes in the future`);
-    }
-    for (const channelKey of targetChannels) {
-      const existing = findExisting(postsByChannel[channelKey], channelKey, spec);
-      if (!existing) assertNoCollision(postsByChannel[channelKey], channelKey, spec);
-    }
-  }
-  return postsByChannel;
+  const plan = planFutureQueue(postsByChannel, { channelKeys, nowMs, minLeadMs });
+  return { postsByChannel, futureSpecs, plan };
 }
 
 async function createPost(channelKey, spec) {
@@ -282,6 +391,31 @@ async function createPost(channelKey, spec) {
   return data.createPost.post;
 }
 
+async function resolveImmediatelyBeforeCreate({
+  channelKey,
+  spec,
+  subject = campaign,
+  listPostsFn = listPosts,
+  createPostFn = createPost,
+}) {
+  // Buffer does not expose an atomic create-if-absent operation. Refreshing the
+  // complete channel queue immediately before mutation narrows the only race
+  // window and makes reruns reuse an exact record instead of duplicating it.
+  const latestPosts = await listPostsFn(CHANNELS[channelKey].id);
+  const existing = findExisting(latestPosts, channelKey, spec, subject);
+  if (existing) {
+    if (existing.status !== 'scheduled') {
+      throw new Error(`${spec.id}/${channelKey} has unexpected future status ${existing.status}`);
+    }
+    assertNoCollision(latestPosts, channelKey, spec, existing.id);
+    return { post: existing, action: 'reuse' };
+  }
+
+  assertNoCollision(latestPosts, channelKey, spec);
+  const post = await createPostFn(channelKey, spec);
+  return { post, action: 'create' };
+}
+
 async function getPost(id) {
   const query = `
     query WitnessedCampaignPost($input: PostInput!) {
@@ -297,31 +431,52 @@ async function getPost(id) {
 }
 
 async function scheduleCampaign(channelKeys) {
-  const postsByChannel = await preflight({ requireFuture: true, channelKeys });
+  const { postsByChannel, plan } = await preflight({ channelKeys });
   const scheduled = [];
-  for (const spec of campaign.posts) {
-    for (const channelKey of spec.channels.filter((key) => channelKeys.includes(key))) {
-      let post = findExisting(postsByChannel[channelKey], channelKey, spec);
-      if (!post) {
-        post = await createPost(channelKey, spec);
-        postsByChannel[channelKey].push(post);
-        console.log(`CREATED ${spec.id}/${channelKey}: ${post.id}`);
-      } else {
-        console.log(`REUSED ${spec.id}/${channelKey}: ${post.id}`);
-      }
-      const verified = await getPost(post.id);
-      assertExactPost(verified, channelKey, spec);
-      if (verified.status === 'error') {
-        throw new Error(`${spec.id}/${channelKey} failed: ${verified.error?.message || 'unknown error'}`);
-      }
-      if (verified.status !== 'scheduled') {
-        throw new Error(`${spec.id}/${channelKey} has unexpected status ${verified.status}`);
-      }
-      scheduled.push({ id: spec.id, channel: channelKey, bufferId: verified.id, dueAt: verified.dueAt });
-      console.log(`VERIFIED ${spec.id}/${channelKey}: ${verified.dueAt}`);
+  for (const row of plan) {
+    const { spec, channelKey } = row;
+    let post = row.post;
+    if (!post) {
+      const resolved = await resolveImmediatelyBeforeCreate({ channelKey, spec });
+      post = resolved.post;
+      postsByChannel[channelKey].push(post);
+      console.log(`${resolved.action === 'create' ? 'CREATED' : 'REUSED'} ${spec.id}/${channelKey}: ${post.id}`);
+    } else {
+      console.log(`REUSED ${spec.id}/${channelKey}: ${post.id}`);
     }
+    const verified = await getPost(post.id);
+    assertExactPost(verified, channelKey, spec);
+    if (verified.status === 'error') {
+      throw new Error(`${spec.id}/${channelKey} failed: ${verified.error?.message || 'unknown error'}`);
+    }
+    if (verified.status !== 'scheduled') {
+      throw new Error(`${spec.id}/${channelKey} has unexpected status ${verified.status}`);
+    }
+    scheduled.push({ id: spec.id, channel: channelKey, bufferId: verified.id, dueAt: verified.dueAt });
+    console.log(`VERIFIED ${spec.id}/${channelKey}: ${verified.dueAt}`);
   }
   console.log(`SCHEDULED ${JSON.stringify(scheduled)}`);
+}
+
+async function verifyFutureQueue(channelKeys) {
+  // Queue validation covers every not-yet-due record, even when it is too late
+  // for the scheduler's ten-minute creation safety window.
+  const { plan } = await preflight({ channelKeys, minLeadMs: 0 });
+  const missing = plan.filter((row) => row.action === 'create');
+  const rows = plan.map((row) => ({
+    id: row.spec.id,
+    channel: row.channelKey,
+    found: row.action === 'reuse',
+    bufferId: row.post?.id || null,
+    status: row.post?.status || null,
+    dueAt: row.spec.dueAt,
+  }));
+  console.log(`QUEUE_AUDIT ${JSON.stringify(rows)}`);
+  if (missing.length) {
+    throw new Error(
+      `Missing future queue records: ${missing.map((row) => `${row.spec.id}/${row.channelKey}`).join(', ')}`,
+    );
+  }
 }
 
 async function audit({ strict = false, channelKeys = Object.keys(CHANNELS) } = {}) {
@@ -357,6 +512,7 @@ async function audit({ strict = false, channelKeys = Object.keys(CHANNELS) } = {
 
 function preview() {
   validateManifest();
+  validatePublishedAssets();
   const rows = campaign.posts.map((spec) => ({
     id: spec.id,
     dueAt: spec.dueAt,
@@ -376,14 +532,17 @@ async function main() {
   if (channelKey && !CHANNELS[channelKey]) throw new Error(`Unsupported channel: ${channelKey}`);
   const channelKeys = channelKey ? [channelKey] : Object.keys(CHANNELS);
   if (action === 'preview') return preview();
-  if (!['preflight', 'schedule', 'audit', 'verify'].includes(action)) {
+  if (!['preflight', 'schedule', 'queue-verify', 'audit', 'verify'].includes(action)) {
     throw new Error(`Unsupported action: ${action}`);
   }
   if (action === 'preflight') {
-    await preflight({ requireFuture: true, channelKeys });
-    console.log('PREFLIGHT OK');
+    const { plan } = await preflight({ channelKeys });
+    const createCount = plan.filter((row) => row.action === 'create').length;
+    const reuseCount = plan.length - createCount;
+    console.log(`PREFLIGHT OK: ${createCount} create, ${reuseCount} reuse`);
   }
   if (action === 'schedule') await scheduleCampaign(channelKeys);
+  if (action === 'queue-verify') await verifyFutureQueue(channelKeys);
   if (action === 'audit') await audit({ strict: false, channelKeys });
   if (action === 'verify') await audit({ strict: true, channelKeys });
 }
@@ -396,6 +555,13 @@ if (require.main === module) {
 }
 
 module.exports = {
+  COLLISION_WINDOW_MS,
+  MIN_SCHEDULE_LEAD_MS,
   NFL_CROSS_LEAGUE_PATTERN,
+  listPosts,
+  planFutureQueue,
+  resolveImmediatelyBeforeCreate,
+  selectFutureSpecs,
   validateManifest,
+  validatePublishedAssets,
 };

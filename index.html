@@ -273,7 +273,7 @@
         <h1 id="hero-title">You were <em>there.</em></h1>
         <p class="hero-copy">Turn every game you attend into a fan resume only you could build—your teams, venues, records, memories, and the stories hiding in your history.</p>
         <div class="actions">
-          <a class="button" href="https://apps.apple.com/app/id6781100911" aria-label="Download Witnessed on the App Store">Get Witnessed free</a>
+          <a class="button" href="/download/hero?utm_source=bluebrook&amp;utm_medium=website&amp;utm_campaign=evergreen_2026&amp;utm_content=hero" data-download-placement="hero" aria-label="Download Witnessed on the App Store">Get Witnessed free</a>
           <a class="button button-secondary" href="#how-it-works">See how it works</a>
         </div>
         <p class="fine-print">Free on iPhone. Unlimited game logging, imports, and branded share cards.</p>
@@ -318,7 +318,7 @@
       <div class="shell">
         <h2 id="statement-title">Not every fan saw what <span>you saw.</span></h2>
         <p>Your attendance history is personal. Witnessed helps you build it, understand it, export it, and delete your account when you choose.</p>
-        <a class="button" href="https://apps.apple.com/app/id6781100911">Start your history</a>
+        <a class="button" href="/download/final?utm_source=bluebrook&amp;utm_medium=website&amp;utm_campaign=evergreen_2026&amp;utm_content=final" data-download-placement="final">Start your history</a>
       </div>
     </section>
   </main>
@@ -327,12 +327,39 @@
     <div class="shell footer-inner">
       <span>© 2026 Bluebrook Co., LLC · Columbia, South Carolina</span>
       <div class="footer-links">
-        <a href="https://seenlive-production.up.railway.app/privacy">Privacy</a>
-        <a href="https://seenlive-production.up.railway.app/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
         <a href="https://seenlive-production.up.railway.app/support">Support</a>
         <a href="mailto:davis@bluebrook.co">Contact</a>
       </div>
     </div>
   </footer>
+  <script>
+    (() => {
+      // Preserve only aggregate campaign labels. Never persist or forward
+      // arbitrary query parameters that could contain personal information.
+      const allowed = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+      const incoming = new URLSearchParams(window.location.search);
+      const clean = (value) => {
+        const raw = value.trim().toLowerCase();
+        if (!raw || raw.includes('@') || raw.length > 80) return '';
+        return raw
+          .replace(/[^a-z0-9._~-]+/g, '_')
+          .replace(/^_+|_+$/g, '')
+          .slice(0, 80);
+      };
+
+      document.querySelectorAll('[data-download-placement]').forEach((link) => {
+        const destination = new URL(link.getAttribute('href'), window.location.origin);
+        for (const key of allowed) {
+          if (!incoming.has(key)) continue;
+          const value = clean(incoming.get(key) || '');
+          if (value) destination.searchParams.set(key, value);
+        }
+        destination.searchParams.set('cta', clean(link.dataset.downloadPlacement || 'unknown'));
+        link.href = `${destination.pathname}${destination.search}`;
+      });
+    })();
+  </script>
 </body>
 </html>

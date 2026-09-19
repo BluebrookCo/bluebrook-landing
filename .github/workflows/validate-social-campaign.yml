@@ -7,6 +7,11 @@ on:
       - 'scripts/render-nfl-2026-campaign.js'
       - 'scripts/schedule-nfl-2026-campaign.js'
       - 'scripts/schedule-nfl-2026-campaign.test.js'
+      - 'scripts/validate-site.test.js'
+      - 'scripts/validate-fan-history-draft.test.js'
+      - 'assets/social/campaigns/nfl-2026-kickoff/**'
+      - 'index.html'
+      - 'functions/**'
   push:
     branches: [main]
     paths:
@@ -14,6 +19,11 @@ on:
       - 'scripts/render-nfl-2026-campaign.js'
       - 'scripts/schedule-nfl-2026-campaign.js'
       - 'scripts/schedule-nfl-2026-campaign.test.js'
+      - 'scripts/validate-site.test.js'
+      - 'scripts/validate-fan-history-draft.test.js'
+      - 'assets/social/campaigns/nfl-2026-kickoff/**'
+      - 'index.html'
+      - 'functions/**'
 
 permissions:
   contents: read
@@ -30,6 +40,6 @@ jobs:
         with:
           node-version: 24
       - name: Reject cross-league copy and artwork
-        run: node --test scripts/schedule-nfl-2026-campaign.test.js
+        run: node --test scripts/schedule-nfl-2026-campaign.test.js scripts/validate-fan-history-draft.test.js scripts/validate-site.test.js
       - name: Validate complete campaign manifest
         run: node scripts/schedule-nfl-2026-campaign.js --action=preview
