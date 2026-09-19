@@ -78,6 +78,33 @@ test('download redirects reject PII-shaped UTM values and untrusted placements',
   assert.equal(unknown.headers.has('location'), false);
 });
 
+test('short social campaign links rebuild fixed aggregate attribution', async () => {
+  const response = await requestRedirect(
+    '/c/x/fh02?email=davis%40example.com&utm_campaign=attacker&redirect=https%3A%2F%2Fevil.example',
+  );
+  assert.equal(response.status, 302);
+  const destination = new URL(response.headers.get('location'));
+  assert.equal(destination.origin + destination.pathname, 'https://bluebrook.co/');
+  assert.deepEqual([...destination.searchParams.entries()], [
+    ['utm_source', 'x'],
+    ['utm_medium', 'organic_social'],
+    ['utm_campaign', 'fan_history_fall_2026'],
+    ['utm_content', 'sec_deep_cut_roll_call'],
+  ]);
+  assert.doesNotMatch(destination.toString(), /davis|example\.com|attacker|evil/i);
+
+  const instagram = await requestRedirect('/c/ig/fh06?user_id=42');
+  const instagramDestination = new URL(instagram.headers.get('location'));
+  assert.equal(instagramDestination.searchParams.get('utm_source'), 'instagram');
+  assert.equal(instagramDestination.searchParams.get('utm_content'), 'sec_fan_resume');
+
+  for (const invalid of ['/c/x/fh99', '/c/tiktok/fh01', '/c/x/fh01/extra']) {
+    const rejected = await requestRedirect(invalid);
+    assert.equal(rejected.status, 404);
+    assert.equal(rejected.headers.has('location'), false);
+  }
+});
+
 test('unrelated paths continue through the Pages middleware', async () => {
   const response = await requestRedirect('/assets/witnessed-icon.png?email=local-only');
   assert.equal(response.status, 200);

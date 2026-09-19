@@ -1,7 +1,7 @@
 {
   "campaignId": "fan_history_fall_2026_sprint_01",
   "campaignName": "Your Games Become Your Story",
-  "status": "reviewed_draft_do_not_schedule",
+  "status": "rendered_pending_final_queue_review",
   "schedulingEnabled": false,
   "reviewedOn": "2026-09-19",
   "timezone": "America/New_York",
@@ -38,15 +38,15 @@
       "channels": ["twitter", "instagram"],
       "goal": "Prompt replies while making incomplete fan history emotionally costly.",
       "asset": "01-nfl-history-audit.png",
-      "assetStatus": "draft_not_rendered",
+      "assetStatus": "rendered_reviewed",
       "assetRights": "original_geometry_and_typography_only",
       "assetBrief": "Cream field, black Witnessed ticket silhouette, three empty season rows resolving into one gold completed row. Headline: YOUR MEMORY IS NOT A DATABASE. No logos, uniforms, faces, or copied ticket textures.",
       "altText": "Cream, black and gold Witnessed graphic showing an incomplete pro football history becoming a finished personal archive.",
-      "twitter": "Quick fan-history audit:\n\nWhat was your first NFL game in person?\nWhat was your best?\nWhich one can you no longer remember the score of?\n\nBuild the archive before another Sunday gets added: https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_history_audit",
+      "twitter": "Quick fan-history audit:\n\nWhat was your first NFL game in person?\nWhat was your best?\nWhich one can you no longer remember the score of?\n\nBuild the archive before another Sunday gets added: https://bluebrook.co/c/x/fh01",
       "instagram": "Quick fan-history audit:\n\nWhat was your first NFL game in person? What was your best? Which one can you no longer remember the score of?\n\nBuild the archive before another Sunday gets added. Link in bio.\n\n#WitnessedApp #FanHistory #NFLSunday",
       "landingUrls": {
-        "twitter": "https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_history_audit",
-        "instagram": "https://bluebrook.co/?utm_source=instagram&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_history_audit"
+        "twitter": "https://bluebrook.co/c/x/fh01",
+        "instagram": "https://bluebrook.co/c/ig/fh01"
       }
     },
     {
@@ -57,15 +57,15 @@
       "channels": ["twitter", "instagram"],
       "goal": "Earn SEC-burner replies through obscure personal recall, then connect that behavior to Deep Cuts.",
       "asset": "02-sec-deep-cut-roll-call.png",
-      "assetStatus": "draft_not_rendered",
+      "assetStatus": "rendered_reviewed",
       "assetRights": "original_geometry_and_typography_only",
       "assetBrief": "Black field with a cream ticket mark, gold rarity meter, and generic Saturday scoreboard numerals. Headline: NAME THE GAME ONLY YOU REMEMBER. No school colors, logos, mascots, uniforms, faces, or copied ticket textures.",
       "altText": "Black, cream and gold Witnessed graphic asking SEC fans to name the game only they still remember.",
-      "twitter": "Every SEC fan has one game no neutral remembers.\n\nNot the title game. Not the upset everybody posts. The weird one you can still describe drive by drive.\n\nName yours. Witnessed turns a history full of those games into Deep Cuts: https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_deep_cut_roll_call",
+      "twitter": "Every SEC fan has one game no neutral remembers.\n\nNot the title game. Not the upset everybody posts. The weird one you can still describe drive by drive.\n\nName yours. Witnessed turns a history full of those games into Deep Cuts: https://bluebrook.co/c/x/fh02",
       "instagram": "Every SEC fan has one game no neutral remembers.\n\nNot the title game. Not the upset everybody posts. The weird one you can still describe drive by drive.\n\nName yours. Witnessed turns a history full of those games into Deep Cuts. Link in bio.\n\n#WitnessedApp #SECFootball #CollegeFootball",
       "landingUrls": {
-        "twitter": "https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_deep_cut_roll_call",
-        "instagram": "https://bluebrook.co/?utm_source=instagram&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_deep_cut_roll_call"
+        "twitter": "https://bluebrook.co/c/x/fh02",
+        "instagram": "https://bluebrook.co/c/ig/fh02"
       }
     },
     {
@@ -76,15 +76,15 @@
       "channels": ["twitter", "instagram"],
       "goal": "Explain the product's differentiated value in one memorable line before Sunday games.",
       "asset": "03-nfl-one-game-ten-games.png",
-      "assetStatus": "draft_not_rendered",
+      "assetStatus": "rendered_reviewed",
       "assetRights": "original_geometry_and_typography_only",
       "assetBrief": "Cream background with ten small original ticket notches converging into a bold black-and-gold pattern card. Headline: ONE GAME IS A MEMORY. TEN GAMES IS A PATTERN. No logos, uniforms, faces, or copied ticket textures.",
       "altText": "Cream, black and gold Witnessed graphic showing ten pro football ticket marks becoming a personalized pattern.",
-      "twitter": "One NFL game is a memory.\nTen games is a pattern.\n\nYour record with a team. The player you keep seeing. The venue that never gives you a normal finish.\n\nLog the games. Find the Deep Cuts: https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_ten_games_pattern",
+      "twitter": "One NFL game is a memory.\nTen games is a pattern.\n\nYour record with a team. The player you keep seeing. The venue that never gives you a normal finish.\n\nLog the games. Find the Deep Cuts: https://bluebrook.co/c/x/fh03",
       "instagram": "One NFL game is a memory. Ten games is a pattern.\n\nYour record with a team. The player you keep seeing. The venue that never gives you a normal finish.\n\nLog the games. Find the Deep Cuts. Link in bio.\n\n#WitnessedApp #DeepCuts #FanHistory",
       "landingUrls": {
-        "twitter": "https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_ten_games_pattern",
-        "instagram": "https://bluebrook.co/?utm_source=instagram&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_ten_games_pattern"
+        "twitter": "https://bluebrook.co/c/x/fh03",
+        "instagram": "https://bluebrook.co/c/ig/fh03"
       }
     },
     {
@@ -95,15 +95,15 @@
       "channels": ["twitter", "instagram"],
       "goal": "Drive historical backfill by showing the simple sport-team-season mental model without overclaiming automation.",
       "asset": "04-sec-import-your-saturdays.png",
-      "assetStatus": "draft_not_rendered",
+      "assetStatus": "rendered_reviewed",
       "assetRights": "original_geometry_and_typography_only",
       "assetBrief": "Solid cream field with a vertical black ticket spine labeled SPORT, TEAM, SEASON and a gold completion stamp rendered in original Witnessed geometry. Headline: YOUR SATURDAYS, BACK IN ORDER. No school marks, team colors, uniforms, faces, or copied ticket textures.",
       "altText": "Cream, black and gold Witnessed graphic showing a sport, team and season flow for rebuilding an SEC game history.",
-      "twitter": "Your SEC history should not live in six camera rolls and one group chat argument.\n\nPick the sport. Pick the team. Pick the season. Add the games you were actually at.\n\nPut your Saturdays back in order: https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_history_import",
+      "twitter": "Your SEC history should not live in six camera rolls and one group chat argument.\n\nPick the sport. Pick the team. Pick the season. Add the games you were actually at.\n\nPut your Saturdays back in order: https://bluebrook.co/c/x/fh04",
       "instagram": "Your SEC history should not live in six camera rolls and one group chat argument.\n\nPick the sport. Pick the team. Pick the season. Add the games you were actually at.\n\nPut your Saturdays back in order. Link in bio.\n\n#WitnessedApp #SECFootball #FanHistory",
       "landingUrls": {
-        "twitter": "https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_history_import",
-        "instagram": "https://bluebrook.co/?utm_source=instagram&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_history_import"
+        "twitter": "https://bluebrook.co/c/x/fh04",
+        "instagram": "https://bluebrook.co/c/ig/fh04"
       }
     },
     {
@@ -114,15 +114,15 @@
       "channels": ["twitter", "instagram"],
       "goal": "Make Deep Cuts concrete and credible without fabricating a user's statistic.",
       "asset": "05-nfl-deep-cut-proof.png",
-      "assetStatus": "draft_not_rendered",
+      "assetStatus": "rendered_reviewed",
       "assetRights": "original_geometry_and_typography_only",
       "assetBrief": "Black background, cream outlined ticket, gold connective lines between generic GAME, PLAYER, VENUE and FINISH labels. Headline: THE DETAIL IS THE FLEX. Use no invented score, percentage, logo, uniform, face, or copied ticket texture.",
       "altText": "Black, cream and gold Witnessed graphic connecting games, players, venues and finishes into a personalized pro football Deep Cut.",
-      "twitter": "“I saw them play” is a memory.\n\n“I saw them three times, in two cities, and every game came down to the final possession” is a Deep Cut.\n\nYour attendance history has better stories than a total ever will: https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_deep_cut_proof",
+      "twitter": "“I saw them play” is a memory.\n\n“I saw them three times, in two cities, and every game came down to the final possession” is a Deep Cut.\n\nYour attendance history has better stories than a total ever will: https://bluebrook.co/c/x/fh05",
       "instagram": "“I saw them play” is a memory.\n\n“I saw them three times, in two cities, and every game came down to the final possession” is a Deep Cut.\n\nYour attendance history has better stories than a total ever will. Link in bio.\n\n#WitnessedApp #DeepCuts #NFLFans",
       "landingUrls": {
-        "twitter": "https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_deep_cut_proof",
-        "instagram": "https://bluebrook.co/?utm_source=instagram&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=nfl_deep_cut_proof"
+        "twitter": "https://bluebrook.co/c/x/fh05",
+        "instagram": "https://bluebrook.co/c/ig/fh05"
       }
     },
     {
@@ -133,15 +133,15 @@
       "channels": ["twitter", "instagram"],
       "goal": "Create a shareable identity prompt that invites screenshots without requiring licensed marks.",
       "asset": "06-sec-fan-resume.png",
-      "assetStatus": "draft_not_rendered",
+      "assetStatus": "rendered_reviewed",
       "assetRights": "original_geometry_and_typography_only",
       "assetBrief": "Cream background with an original black Witnessed ticket-resume containing blank fields for FIRST GAME, BEST FINISH, MOST-SEEN OPPONENT and ROAD VENUES, plus one gold share tab. No school marks, team colors, uniforms, faces, or copied ticket textures.",
       "altText": "Cream, black and gold Witnessed fan-resume graphic with blank fields for an SEC fan's personal attendance history.",
-      "twitter": "Your SEC fan resume:\n\nFirst game in person:\nBest finish you witnessed:\nOpponent you have seen most:\nRoad venues visited:\n\nQuote this with yours—or build the version your memory cannot lose: https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_fan_resume",
+      "twitter": "Your SEC fan resume:\n\nFirst game in person:\nBest finish you witnessed:\nOpponent you have seen most:\nRoad venues visited:\n\nQuote this with yours—or build the version your memory cannot lose: https://bluebrook.co/c/x/fh06",
       "instagram": "Your SEC fan resume:\n\nFirst game in person:\nBest finish you witnessed:\nOpponent you have seen most:\nRoad venues visited:\n\nFill it in below—or build the version your memory cannot lose. Link in bio.\n\n#WitnessedApp #SECFootball #FanResume",
       "landingUrls": {
-        "twitter": "https://bluebrook.co/?utm_source=x&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_fan_resume",
-        "instagram": "https://bluebrook.co/?utm_source=instagram&utm_medium=organic_social&utm_campaign=fan_history_fall_2026&utm_content=sec_fan_resume"
+        "twitter": "https://bluebrook.co/c/x/fh06",
+        "instagram": "https://bluebrook.co/c/ig/fh06"
       }
     }
   ]

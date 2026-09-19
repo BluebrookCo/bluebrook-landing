@@ -1,6 +1,7 @@
-# Fan-history sprint — reviewed draft
+# Fan-history sprint — rendered, awaiting final queue review
 
-Status: **do not schedule**. The machine-readable draft is
+Status: **rendered but fail-closed; do not schedule until the live Buffer queue
+passes final collision and channel checks**. The machine-readable campaign is
 `fan-history-sprint-2026-fall.json`.
 
 ## Why this direction
@@ -20,8 +21,15 @@ Status: **do not schedule**. The machine-readable draft is
 
 ## Approval gate
 
-Before scheduling, render all six assets, review every pixel at X and Instagram
-sizes, validate the factual product claims against the live App Store build,
-confirm the dates are still timely, and copy the approved manifest into a
-separate scheduler implementation. The current Buffer scheduler does not load
-this draft file.
+All six 1080 × 1350 assets have now been rendered and visually reviewed. The
+automated checks enforce exact asset membership/dimensions, X and Instagram
+copy limits, single-league subject coherence, rights-safe artwork briefs,
+chronological spacing, and privacy-safe first-party short links. Those short
+links rebuild fixed aggregate UTM labels on `bluebrook.co`; incoming query
+parameters cannot override them.
+
+Before scheduling, the still-disabled campaign must pass a live Buffer
+preflight: exact connected channel identities, public PNG responses, complete
+queue pagination, no record within 45 minutes, and an immediate duplicate
+recheck before every create. Only then may `schedulingEnabled` be changed to
+`true`. The scheduler must remain create-only—no delete or edit behavior.

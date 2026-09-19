@@ -1,5 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const campaign = require('../marketing/fan-history-sprint-2026-fall.json');
 
@@ -8,8 +10,10 @@ function weightedXLength(text) {
   return text.length - urls.reduce((total, url) => total + url.length - 23, 0);
 }
 
-test('draft cannot be mistaken for an approved scheduling manifest', () => {
-  assert.equal(campaign.status, 'reviewed_draft_do_not_schedule');
+const assetDirectory = path.resolve(__dirname, '..', campaign.assetDirectory);
+
+test('rendered campaign remains fail-closed until final queue review', () => {
+  assert.equal(campaign.status, 'rendered_pending_final_queue_review');
   assert.equal(campaign.schedulingEnabled, false);
   assert.equal(campaign.posts.length, 6);
   assert.deepEqual(
@@ -21,7 +25,7 @@ test('draft cannot be mistaken for an approved scheduling manifest', () => {
   );
 });
 
-test('each draft post is single-league coherent', () => {
+test('each campaign post is single-league coherent', () => {
   for (const post of campaign.posts) {
     const creative = [post.twitter, post.instagram, post.altText, post.assetBrief].join('\n');
     assert.ok(['nfl', 'sec_cfb'].includes(post.leagueSubject), `${post.id} has a valid league`);
@@ -33,7 +37,7 @@ test('each draft post is single-league coherent', () => {
   }
 });
 
-test('copy and artwork briefs stay publish-safe', () => {
+test('copy and rendered artwork stay publish-safe', () => {
   const ids = new Set();
   const assets = new Set();
   for (const post of campaign.posts) {
@@ -41,39 +45,41 @@ test('copy and artwork briefs stay publish-safe', () => {
     assert.ok(!assets.has(post.asset), `duplicate asset ${post.asset}`);
     ids.add(post.id);
     assets.add(post.asset);
-    assert.equal(post.assetStatus, 'draft_not_rendered');
+    assert.equal(post.assetStatus, 'rendered_reviewed');
     assert.equal(post.assetRights, 'original_geometry_and_typography_only');
     assert.ok(post.asset.endsWith('.png'));
     assert.ok(post.altText.length > 30 && post.altText.length <= 1000);
     assert.ok(weightedXLength(post.twitter) <= 280, `${post.id} exceeds X weighted length`);
     assert.ok(post.instagram.length <= 2200, `${post.id} exceeds Instagram length`);
+
+    const bytes = fs.readFileSync(path.join(assetDirectory, post.asset));
+    assert.equal(bytes.subarray(1, 4).toString('ascii'), 'PNG', `${post.id} is not PNG`);
+    assert.equal(bytes.readUInt32BE(16), 1080, `${post.id} width drift`);
+    assert.equal(bytes.readUInt32BE(20), 1350, `${post.id} height drift`);
   }
+  const actualAssets = fs.readdirSync(assetDirectory).filter((name) => name.endsWith('.png')).sort();
+  assert.deepEqual(actualAssets, [...assets].sort(), 'publish directory contains missing or obsolete assets');
 });
 
-test('every channel has aggregate, privacy-safe landing attribution', () => {
-  const allowedKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+test('every channel uses a fixed, privacy-safe first-party campaign route', () => {
   for (const post of campaign.posts) {
     for (const channel of ['twitter', 'instagram']) {
       const url = new URL(post.landingUrls[channel]);
       assert.equal(url.origin, 'https://bluebrook.co');
-      assert.equal(url.pathname, '/');
-      assert.deepEqual([...url.searchParams.keys()], allowedKeys);
-      assert.equal(url.searchParams.get('utm_source'), channel === 'twitter' ? 'x' : 'instagram');
-      assert.equal(url.searchParams.get('utm_medium'), 'organic_social');
-      assert.equal(url.searchParams.get('utm_campaign'), campaign.measurement.campaign);
-      assert.match(url.searchParams.get('utm_content'), /^[a-z0-9_]{1,80}$/);
-      assert.doesNotMatch(url.search, /user|event|email|handle|@/i);
+      assert.match(url.pathname, channel === 'twitter' ? /^\/c\/x\/fh\d{2}$/ : /^\/c\/ig\/fh\d{2}$/);
+      assert.equal(url.search, '');
+      assert.doesNotMatch(url.pathname, /user|event|email|handle|@/i);
     }
     assert.ok(post.twitter.includes(post.landingUrls.twitter), `${post.id} X URL drift`);
     assert.doesNotMatch(post.instagram, /https?:\/\//, `${post.id} Instagram caption should use link in bio`);
   }
 });
 
-test('draft dates are ordered and spaced for three strong posts per week', () => {
+test('campaign dates are ordered and spaced for three strong posts per week', () => {
   const dueTimes = campaign.posts.map((post) => Date.parse(post.dueAt));
   assert.ok(dueTimes.every(Number.isFinite));
   for (let index = 1; index < dueTimes.length; index += 1) {
-    assert.ok(dueTimes[index] > dueTimes[index - 1], 'draft dates must be chronological');
-    assert.ok(dueTimes[index] - dueTimes[index - 1] >= 36 * 60 * 60 * 1000, 'draft posts are too close');
+    assert.ok(dueTimes[index] > dueTimes[index - 1], 'campaign dates must be chronological');
+    assert.ok(dueTimes[index] - dueTimes[index - 1] >= 36 * 60 * 60 * 1000, 'campaign posts are too close');
   }
 });

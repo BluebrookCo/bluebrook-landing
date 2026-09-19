@@ -4,6 +4,18 @@ const LEGAL_URLS = {
   '/terms': 'https://seenlive-production.up.railway.app/terms',
 };
 const DOWNLOAD_PLACEMENTS = new Set(['hero', 'final']);
+const SOCIAL_CAMPAIGN_ROUTES = new Map([
+  ['fh01', 'nfl_history_audit'],
+  ['fh02', 'sec_deep_cut_roll_call'],
+  ['fh03', 'nfl_ten_games_pattern'],
+  ['fh04', 'sec_history_import'],
+  ['fh05', 'nfl_deep_cut_proof'],
+  ['fh06', 'sec_fan_resume'],
+]);
+const SOCIAL_CHANNELS = new Map([
+  ['x', 'x'],
+  ['ig', 'instagram'],
+]);
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 const SAFE_AGGREGATE_VALUE = /^[a-z0-9][a-z0-9._~-]{0,79}$/;
 
@@ -30,6 +42,23 @@ export async function onRequest(context) {
   if (legalDestination) {
     // Construct from a constant so no incoming query parameter can cross the boundary.
     return Response.redirect(legalDestination, 302);
+  }
+
+  const socialMatch = pathname.match(/^\/c\/(x|ig)\/(fh\d{2})$/);
+  if (socialMatch) {
+    const source = SOCIAL_CHANNELS.get(socialMatch[1]);
+    const content = SOCIAL_CAMPAIGN_ROUTES.get(socialMatch[2]);
+    if (!source || !content) return new Response('Not found', { status: 404 });
+    const destination = new URL('https://bluebrook.co/');
+    destination.searchParams.set('utm_source', source);
+    destination.searchParams.set('utm_medium', 'organic_social');
+    destination.searchParams.set('utm_campaign', 'fan_history_fall_2026');
+    destination.searchParams.set('utm_content', content);
+    return Response.redirect(destination.toString(), 302);
+  }
+
+  if (pathname.startsWith('/c/')) {
+    return new Response('Not found', { status: 404 });
   }
 
   const match = pathname.match(/^\/download\/([^/]+)$/);
