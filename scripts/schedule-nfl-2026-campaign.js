@@ -555,13 +555,24 @@ if (require.main === module) {
 }
 
 module.exports = {
+  API,
+  CHANNELS,
   COLLISION_WINDOW_MS,
   MIN_SCHEDULE_LEAD_MS,
   NFL_CROSS_LEAGUE_PATTERN,
+  ORGANIZATION_ID,
+  assertExactPost,
+  assertNoCollision,
+  findExisting,
+  getPost,
+  loadChannels,
   listPosts,
+  mediaUrl,
   planFutureQueue,
+  request,
   resolveImmediatelyBeforeCreate,
   selectFutureSpecs,
   validateManifest,
   validatePublishedAssets,
+  verifyMedia,
 };
